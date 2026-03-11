@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Dasha ✦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div id="cur"></div>
+  <div id="cur-ring"></div>
+
+  <!-- Aurora background canvas -->
+  <canvas id="aurora"></canvas>
+
+  <!-- Falling petals layer -->
+  <div id="petals"></div>
+
+  <!-- ═══════════════════════════════════════
+       LOCK SCREEN
+  ═══════════════════════════════════════ -->
+  <div id="lock">
+    <div id="lock-slides">
+      <div class="ls on"><img src="https://picsum.photos/seed/dasha1/1800/1200" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="https://picsum.photos/seed/dasha2/1800/1200" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="https://picsum.photos/seed/dasha3/1800/1200" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="https://picsum.photos/seed/dasha4/1800/1200" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="https://picsum.photos/seed/dasha5/1800/1200" alt="" loading="lazy" /></div>
+    </div>
+
+    <div id="lock-ui">
+      <div class="lock-top">
+        <div class="lock-time" id="lock-time">12:00</div>
+        <div class="lock-date" id="lock-date">Monday, January 1</div>
+        <div class="lock-name" id="lock-name">for Dasha ✦</div>
+      </div>
+
+      <div class="lock-dots" id="lock-dots"></div>
+
+      <div class="swipe-hint" id="swipe-hint">
+        <div class="swipe-line"></div>
+        <div class="swipe-arrow">↑</div>
+        <div class="swipe-text">tap to open</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to lock button (visible on main page) -->
+  <button id="back-btn">← lock screen</button>
+
+  <!-- ═══════════════════════════════════════
+       MAIN PAGE
+  ═══════════════════════════════════════ -->
+  <div id="main">
+
+    <!-- Top image slider -->
+    <div id="top-slider">
+      <div class="ts on"><img src="https://picsum.photos/seed/dasha1/1400/600" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="https://picsum.photos/seed/dasha2/1400/600" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="https://picsum.photos/seed/dasha3/1400/600" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="https://picsum.photos/seed/dasha4/1400/600" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="https://picsum.photos/seed/dasha5/1400/600" alt="" loading="lazy" /></div>
+      <button class="ts-arrow" id="ts-prev" aria-label="Previous image">&#8249;</button>
+      <button class="ts-arrow" id="ts-next" aria-label="Next image">&#8250;</button>
+      <div id="ts-dots"></div>
+      <div class="ts-label">✦ for her</div>
+    </div>
+
+    <div id="page-body">
+
+      <!-- Hero name -->
+      <div class="hero">
+        <p class="hero-eyebrow">✦ counting down to</p>
+        <div class="hero-name">
+          <span id="hero-name-text">Dasha</span>
+          <span class="hero-name-grad" id="hero-name-grad">Dasha</span>
+        </div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="cd-wrap">
+        <p class="cd-eyebrow">days &nbsp;·&nbsp; hours &nbsp;·&nbsp; minutes &nbsp;·&nbsp; seconds</p>
+        <div class="cd-row">
+          <div class="cd-block"><div class="cd-num" id="cd-d">00</div><div class="cd-unit">days</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">hrs</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">min</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">sec</div></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Rotating message -->
+      <div class="message">
+        <p class="msg-text" id="msg">born on a day the world decided to try its absolute hardest</p>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="actions">
+        <button class="btn" id="btn-wish"><span>send a wish</span></button>
+        <button class="btn" id="btn-love"><span>send love</span></button>
+        <button class="btn" id="btn-magic"><span>send magic</span></button>
+      </div>
+
+      <p class="wish-line">wishes sent: <strong id="wish-count">0</strong></p>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       GLASS MUSIC PLAYER (bottom-left)
+  ═══════════════════════════════════════ -->
+  <div id="player">
+    <div class="pl-track">
+      <div class="pl-art" id="pl-art">🎵</div>
+      <div class="pl-info">
+        <div class="pl-title"  id="pl-title">Golden Hour</div>
+        <div class="pl-artist" id="pl-artist">Lo-fi Chill</div>
+      </div>
+    </div>
+    <div class="pl-progress" id="pl-progress">
+      <div class="pl-bar" id="pl-bar"></div>
+    </div>
+    <div class="pl-times">
+      <span class="pl-time" id="pl-cur">0:00</span>
+      <span class="pl-time" id="pl-dur">0:00</span>
+    </div>
+    <div class="pl-controls">
+      <button class="pl-btn" id="btn-prev" aria-label="Previous">&#9664;&#9664;</button>
+      <button class="pl-btn play" id="btn-play" aria-label="Play/Pause">&#9654;</button>
+      <button class="pl-btn" id="btn-next" aria-label="Next">&#9654;&#9654;</button>
+    </div>
+    <div class="pl-vol">
+      <span class="pl-vol-icon">🔈</span>
+      <input class="pl-vol-slider" type="range" min="0" max="1" step="0.01" value="0.7" id="vol-slider" aria-label="Volume" />
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ═══════════════════════════════════════
+       BIRTHDAY CELEBRATION OVERLAY
+  ═══════════════════════════════════════ -->
+  <div id="celeb" role="dialog" aria-label="Birthday celebration">
+    <canvas id="celeb-cv"></canvas>
+    <div class="celeb-inner">
+      <span class="celeb-tag">✦ the moment is finally here ✦</span>
+      <span class="celeb-name" id="celeb-name">Dasha</span>
+      <span class="celeb-sub">Happy Birthday</span>
+      <span class="celeb-emojis">🎂 🎉 🌸 👑</span>
+      <div class="celeb-now-playing">
+        <div class="gift-section">
+  <p class="gift-text">Enter your email for your birthday gift ✦</p>
+  <form id="gift-form">
+    <input type="email" name="email" placeholder="Your email..." required class="gift-input">
+    <button type="submit" class="gift-btn" id="gift-btn">Send</button>
+  </form>
+</div>
+        <div class="cnp-dot"></div>
+        <span class="cnp-text">now playing</span>
+        <span class="cnp-song">Ratchet Happy Birthday — Drake</span>
+      </div>
+      <br />
+      <button class="celeb-close" id="btn-close-celeb">thank you ✦</button>
+    </div>
+  </div>
+
+  <!-- app.js — YouTube iframe is injected dynamically at celebration time -->
+  <script src="app.js"></script>
+
+</body>
+</html>
