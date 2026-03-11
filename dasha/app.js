@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════
-   CONFIG  — edit these two lines
+   CONFIG
 ═══════════════════════════════════════════════════ */
-const NAME     = "Dasha";
-const BIRTHDAY = new Date(Date.now() + 10000); // 10-second demo
+const NAME = "Dasha";
+const BIRTHDAY = new Date("2026-04-03T00:00:00");
 // Real birthday → const BIRTHDAY = new Date("2026-04-05T00:00:00");
 
 // Drake – Ratchet Happy Birthday
@@ -202,7 +202,9 @@ const TRACKS = [
   { title:"Something Stupid", artist:"Sinatra",  emoji:"✨", url:"music/Something Stupid.mp3" },
   { title:"Птичка",           artist:"HammAli",  emoji:"🕊️", url:"music/Птичка.mp3" }
 ];
-let trackIdx  = 0;
+
+// Check browser memory for saved track, default to 0
+let trackIdx  = parseInt(localStorage.getItem("dashaSavedTrack")) || 0;
 let audioEl   = null;
 let isPlaying = false;
 
@@ -212,6 +214,10 @@ function setPlayIcon(on) {
 
 function loadTrack(idx, autoplay) {
   trackIdx = (idx + TRACKS.length) % TRACKS.length;
+  
+  // Save the new track index to the browser's memory
+  localStorage.setItem("dashaSavedTrack", trackIdx);
+  
   const t  = TRACKS[trackIdx];
   document.getElementById("pl-title").textContent  = t.title;
   document.getElementById("pl-artist").textContent = t.artist;
@@ -381,8 +387,13 @@ function showToast(msg) {
 /* ═══════════════════════════════════════════════════
    WISH BUTTONS
 ═══════════════════════════════════════════════════ */
-let wishCount = 0;
-let msgIdx    = 0;
+// Grab saved values from memory, default to 0 if they don't exist
+let wishCount = parseInt(localStorage.getItem("dashaWishCount")) || 0;
+let msgIdx    = parseInt(localStorage.getItem("dashaMsgIdx")) || 0;
+
+// Instantly update the HTML on load so she sees her saved number
+document.getElementById("wish-count").textContent = wishCount;
+
 const MESSAGES = [
   "born on a day the world decided to try its absolute hardest",
   "the kind of person who makes strangers feel like old friends",
@@ -392,11 +403,21 @@ const MESSAGES = [
   "you have a gift for making everywhere feel like somewhere",
 ];
 
+// Display the saved message on load
+document.getElementById("msg").textContent = MESSAGES[msgIdx];
+
 function sendWish(msg) {
   wishCount++;
+  // Save new wish count to memory
+  localStorage.setItem("dashaWishCount", wishCount);
   document.getElementById("wish-count").textContent = wishCount;
+  
   showToast(msg);
+  
   msgIdx = (msgIdx + 1) % MESSAGES.length;
+  // Save new message index to memory
+  localStorage.setItem("dashaMsgIdx", msgIdx);
+  
   const el = document.getElementById("msg");
   el.style.opacity = "0";
   setTimeout(() => { el.textContent = MESSAGES[msgIdx]; el.style.opacity = "1"; }, 320);
