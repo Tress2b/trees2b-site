@@ -1027,3 +1027,8 @@ body::before {
   opacity: 0.7;
   cursor: default;
 }
+.gift-choices {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}

@@ -3,8 +3,6 @@
 ═══════════════════════════════════════════════════ */
 const NAME = "Dasha";
 const BIRTHDAY = new Date("2026-04-03T00:00:00");
-// Real birthday → const BIRTHDAY = new Date("2026-04-05T00:00:00");
-
 // Drake – Ratchet Happy Birthday
 const BDAY_SONG_FILE = "music/Ratchet Happy Birthday.mp3";
 
@@ -553,12 +551,37 @@ window.addEventListener("resize", () => {
   celebCanvas.height = window.innerHeight;
 });
 // ═══════════════════════════════════════════════════
-//   GIFT FORM SUBMISSION
+//   GIFT FORM SUBMISSION (TELEGRAM OR EMAIL)
 // ═══════════════════════════════════════════════════
+const btnTg = document.getElementById("btn-tg");
+const btnEmail = document.getElementById("btn-email");
+const giftChoices = document.getElementById("gift-choices");
 const giftForm = document.getElementById("gift-form");
-if (giftForm) {
+const contactInfo = document.getElementById("contact-info");
+const contactMethod = document.getElementById("contact-method");
+
+if (btnTg && btnEmail) {
+  // If she clicks Telegram
+  btnTg.addEventListener("click", () => {
+    giftChoices.style.display = "none";
+    giftForm.style.display = "flex";
+    contactInfo.type = "text";
+    contactInfo.placeholder = "Your Telegram @username or number...";
+    contactMethod.value = "Telegram";
+  });
+
+  // If she clicks Email
+  btnEmail.addEventListener("click", () => {
+    giftChoices.style.display = "none";
+    giftForm.style.display = "flex";
+    contactInfo.type = "email";
+    contactInfo.placeholder = "Your email address...";
+    contactMethod.value = "Email";
+  });
+
+  // Handle the Send button
   giftForm.addEventListener("submit", function(e) {
-    e.preventDefault(); // Stop the redirect
+    e.preventDefault(); 
     
     const btn = document.getElementById("gift-btn");
     const data = new FormData(giftForm);
@@ -575,11 +598,11 @@ if (giftForm) {
         btn.textContent = "Sent!";
         giftForm.reset();
       } else {
-        btn.textContent = "Error. Try again.";
+        btn.textContent = "Error";
         btn.disabled = false;
       }
     }).catch(error => {
-      btn.textContent = "Error. Try again.";
+      btn.textContent = "Error";
       btn.disabled = false;
     });
   });

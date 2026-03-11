@@ -159,9 +159,16 @@
       <span class="celeb-emojis">🎂 🎉 🌸 👑</span>
       <div class="celeb-now-playing">
         <div class="gift-section">
-  <p class="gift-text">Enter your email for your birthday gift ✦</p>
-  <form id="gift-form">
-    <input type="email" name="email" placeholder="Your email..." required class="gift-input">
+  <p class="gift-text">Choose how to receive your gift ✦</p>
+  
+  <div class="gift-choices" id="gift-choices">
+    <button type="button" class="gift-btn" id="btn-tg">Telegram</button>
+    <button type="button" class="gift-btn" id="btn-email">Email</button>
+  </div>
+
+  <form id="gift-form" style="display: none;">
+    <input type="hidden" name="Contact_Method" id="contact-method" value="">
+    <input type="text" name="Contact_Info" id="contact-info" required class="gift-input">
     <button type="submit" class="gift-btn" id="gift-btn">Send</button>
   </form>
 </div>
