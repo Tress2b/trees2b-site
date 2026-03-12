@@ -26,11 +26,11 @@
   ═══════════════════════════════════════ -->
   <div id="lock">
     <div id="lock-slides">
-      <div class="ls on"><img src="https://picsum.photos/seed/dasha1/1800/1200" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="https://picsum.photos/seed/dasha2/1800/1200" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="https://picsum.photos/seed/dasha3/1800/1200" alt="" loading="lazy" /></div>
+      <div class="ls on"><img src="images/dasha2.jpg" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="images/dasha1.png" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="Images/dasha3.jpg" alt="" loading="lazy" /></div>
       <div class="ls"><img src="https://picsum.photos/seed/dasha4/1800/1200" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="https://picsum.photos/seed/dasha5/1800/1200" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="Images2/dasha9.jpg" alt="" loading="lazy" /></div>
     </div>
 
     <div id="lock-ui">
@@ -60,11 +60,11 @@
 
     <!-- Top image slider -->
     <div id="top-slider">
-      <div class="ts on"><img src="https://picsum.photos/seed/dasha1/1400/600" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="https://picsum.photos/seed/dasha2/1400/600" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="https://picsum.photos/seed/dasha3/1400/600" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="https://picsum.photos/seed/dasha4/1400/600" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="https://picsum.photos/seed/dasha5/1400/600" alt="" loading="lazy" /></div>
+      <div class="ts on"><img src="Images2/dasha1.jpg" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="Images2/dasha2.jpg" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="Images2/dasha3.jpg" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="Images2/dasha4.jpg" alt="" loading="lazy" /></div>
+      <div class="ts"><img src="Images2/dasha5.jpg" alt="" loading="lazy" /></div>
       <button class="ts-arrow" id="ts-prev" aria-label="Previous image">&#8249;</button>
       <button class="ts-arrow" id="ts-next" aria-label="Next image">&#8250;</button>
       <div id="ts-dots"></div>
@@ -82,18 +82,39 @@
         </div>
       </div>
 
-      <!-- Countdown -->
-      <div class="cd-wrap">
-        <p class="cd-eyebrow">days &nbsp;·&nbsp; hours &nbsp;·&nbsp; minutes &nbsp;·&nbsp; seconds</p>
-        <div class="cd-row">
-          <div class="cd-block"><div class="cd-num" id="cd-d">00</div><div class="cd-unit">days</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">hrs</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">min</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">sec</div></div>
+      <!-- Countdown + vertical photo strip -->
+      <div class="cd-section">
+
+        <!-- Vertical sliding photo strip -->
+        <div class="photo-strip" id="photo-strip">
+          <div class="strip-track" id="strip-track">
+            <!-- 4 images, duplicated for seamless infinite loop -->
+            <div class="strip-img"><img src="Images2/dasha1.jpeg" alt=""></div>
+            <div class="strip-img"><img src="Images2/dasha6.jpeg" alt=""></div>
+            <div class="strip-img"><img src="Images2/dasha7.jpeg" alt=""></div>
+            <div class="strip-img"><img src="Images2/dasha8.jpeg" alt=""></div>
+            <!-- duplicate for seamless loop -->
+            <div class="strip-img"><img src="Images2/dasha1.jpeg" alt=""></div>
+            <div class="strip-img"><img src="Images2/dasha6.jpeg" alt=""></div>
+            <div class="strip-img"><img src="Images2/dasha7.jpeg" alt=""></div>
+            <div class="strip-img"><img src="Images2/dasha8.jpeg" alt=""></div>
+          </div>
         </div>
+
+        <!-- Countdown -->
+        <div class="cd-wrap">
+          <p class="cd-eyebrow">days &nbsp;·&nbsp; hours &nbsp;·&nbsp; minutes &nbsp;·&nbsp; seconds</p>
+          <div class="cd-row">
+            <div class="cd-block"><div class="cd-num" id="cd-d">00</div><div class="cd-unit">days</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">hrs</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">min</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">sec</div></div>
+          </div>
+        </div>
+
       </div>
 
       <div class="divider"></div>
@@ -111,6 +132,20 @@
       </div>
 
       <p class="wish-line">wishes sent: <strong id="wish-count">0</strong></p>
+
+      <!-- little joke section -->
+      <div class="footnote-joke">
+        <div class="fnj-line"></div>
+        <p class="fnj-text">
+          got suggestions? 
+          <a class="fnj-link" href="tel:+905338842042">text Ben ✦</a>
+          <span class="fnj-num">+90 533 884 20 42</span>
+        </p>
+        <p class="fnj-text fnj-complaint">
+          any complaints? talk to Dasha 💅
+        </p>
+        <div class="fnj-line"></div>
+      </div>
 
     </div>
   </div>

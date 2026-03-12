@@ -285,7 +285,7 @@ body::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 35%; /* 25% down from the top */
   display: block;
 }
 
@@ -1032,3 +1032,132 @@ body::before {
   gap: 15px;
   justify-content: center;
 }
+/* ═══════════════════════════════════════════════════
+   COUNTDOWN + PHOTO STRIP LAYOUT
+═══════════════════════════════════════════════════ */
+
+/* Outer row: strip on left, countdown on right */
+.cd-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: clamp(22px, 4vh, 44px);
+  justify-content: center;
+}
+
+/* ── Vertical Photo Strip ── */
+.photo-strip {
+  width: clamp(54px, 9vw, 100px);   /* ~2/10 of screen */
+  height: clamp(260px, 44vh, 420px);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  /* subtle border + glow */
+  border: 1px solid rgba(242,232,217,0.1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(242,232,217,0.06);
+}
+
+/* Top & bottom fade-out masks */
+.photo-strip::before,
+.photo-strip::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 60px;
+  z-index: 2;
+  pointer-events: none;
+}
+.photo-strip::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+}
+.photo-strip::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+}
+
+/* The scrolling column of images */
+.strip-track {
+  display: flex;
+  flex-direction: column;
+  /* 8 items (4 real + 4 duplicate) — each ~50% of strip height */
+  animation: stripFall 14s linear infinite;
+  will-change: transform;
+}
+
+/* Each image cell */
+.strip-img {
+  width: 100%;
+  flex-shrink: 0;
+  /* height = strip height / 2 so exactly 2 images visible at once */
+  height: clamp(130px, 22vh, 210px);
+}
+
+.strip-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Scroll exactly half the total height → seamless loop on the duplicate set */
+@keyframes stripFall {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* On small screens: hide strip so layout doesn't break */
+@media (max-width: 480px) {
+  .photo-strip { display: none; }
+  .cd-section  { flex-direction: column; }
+}
+
+/* ═══════════════════════════════════════════════════
+   FOOTNOTE JOKE
+═══════════════════════════════════════════════════ */
+.footnote-joke {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  opacity: 0.55;
+  transition: opacity 0.4s;
+}
+
+.footnote-joke:hover { opacity: 1; }
+
+.fnj-line {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242,232,217,0.2), transparent);
+}
+
+.fnj-text {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: rgba(242,232,217,0.35);
+  text-align: center;
+  font-family: 'Syne', sans-serif;
+}
+
+.fnj-link {
+  color: var(--terra);
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(200,120,74,0.4);
+  transition: color 0.2s, border-color 0.2s;
+  letter-spacing: 1px;
+}
+.fnj-link:hover { color: #f5d49a; border-color: #f5d49a; }
+
+.fnj-num {
+  color: rgba(242,232,217,0.25);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-left: 6px;
+}
+
+.fnj-complaint { font-style: italic; }
