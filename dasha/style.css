@@ -1047,15 +1047,23 @@ body::before {
 
 /* ── Vertical Photo Strip ── */
 .photo-strip {
-  width: clamp(54px, 9vw, 100px);   /* ~2/10 of screen */
+  width: clamp(54px, 9vw, 100px);
   height: clamp(260px, 44vh, 420px);
   border-radius: 16px;
-  overflow: hidden;
+  /* overflow:hidden breaks transform animations on Android Chrome —
+     use clip-path instead, it's composited on a separate layer */
+  overflow: visible;
+  -webkit-clip-path: inset(0 0 0 0 round 16px);
+  clip-path: inset(0 0 0 0 round 16px);
   position: relative;
   flex-shrink: 0;
-  /* subtle border + glow */
   border: 1px solid rgba(242,232,217,0.1);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(242,232,217,0.06);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  /* force own GPU compositing layer so Android doesn't flatten it */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Top & bottom fade-out masks */
@@ -1081,17 +1089,23 @@ body::before {
 .strip-track {
   display: flex;
   flex-direction: column;
-  /* 8 items (4 real + 4 duplicate) — each ~50% of strip height */
+  /* own layer — keeps animation off the main thread on mobile */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-animation: stripFall 14s linear infinite;
   animation: stripFall 14s linear infinite;
-  will-change: transform;
 }
 
 /* Each image cell */
 .strip-img {
   width: 100%;
   flex-shrink: 0;
-  /* height = strip height / 2 so exactly 2 images visible at once */
   height: clamp(130px, 22vh, 210px);
+  /* prevent Android from lazily skipping off-screen images inside animation */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .strip-img img {
@@ -1100,18 +1114,32 @@ body::before {
   object-fit: cover;
   object-position: center;
   display: block;
+  /* stop Android WebKit from dropping image decode mid-animation */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
-/* Scroll exactly half the total height → seamless loop on the duplicate set */
+/* Seamless loop — scroll exactly half (4 real images) */
+@-webkit-keyframes stripFall {
+  0%   { -webkit-transform: translateY(0);    transform: translateY(0); }
+  100% { -webkit-transform: translateY(-50%); transform: translateY(-50%); }
+}
 @keyframes stripFall {
   0%   { transform: translateY(0); }
   100% { transform: translateY(-50%); }
 }
 
-/* On small screens: hide strip so layout doesn't break */
+/* Mobile — shrink but keep visible */
 @media (max-width: 480px) {
-  .photo-strip { display: none; }
-  .cd-section  { flex-direction: column; }
+  .cd-section   { gap: 12px; }
+  .photo-strip  {
+    width: 56px;
+    height: 230px;
+    border-radius: 12px;
+    -webkit-clip-path: inset(0 0 0 0 round 12px);
+    clip-path: inset(0 0 0 0 round 12px);
+  }
+  .strip-img    { height: 115px; }
 }
 
 /* ═══════════════════════════════════════════════════
