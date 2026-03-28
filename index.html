@@ -1,270 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>a small gift from B ✦</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trees2b | Orbital System</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Custom cursor -->
-  <div id="cur"></div>
-  <div id="cur-ring"></div>
-
-  <!-- Aurora background canvas -->
-  <canvas id="aurora"></canvas>
-
-  <!-- Falling petals layer -->
-  <div id="petals"></div>
-
-  <!-- ═══════════════════════════════════════
-       LOCK SCREEN
-  ═══════════════════════════════════════ -->
-  <div id="lock">
-    <div id="lock-slides">
-      <div class="ls on"><img src="images/dasha2.jpg" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="images/dasha1.png" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="Images/dasha3.jpg" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="https://picsum.photos/seed/dasha4/1800/1200" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="Images2/dasha9.jpg" alt="" loading="lazy" /></div>
-    </div>
-
-    <div id="lock-ui">
-      <div class="lock-top">
-        <div class="lock-time" id="lock-time">12:00</div>
-        <div class="lock-date" id="lock-date">Monday, January 1</div>
-        <div class="lock-name" id="lock-name">a small gift from B ✦</div>
-      </div>
-
-      <div class="lock-dots" id="lock-dots"></div>
-
-      <div class="swipe-hint" id="swipe-hint">
-        <div class="swipe-line"></div>
-        <div class="swipe-arrow">↑</div>
-        <div class="swipe-text">tap to open</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Back to lock button (visible on main page) -->
-  <button id="back-btn">← lock screen</button>
-
-  <!-- ═══════════════════════════════════════
-       MAIN PAGE
-  ═══════════════════════════════════════ -->
-  <div id="main">
-
-    <!-- Top image slider -->
-    <div id="top-slider">
-      <div class="ts on"><img src="Images2/dasha1.jpg" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="Images2/dasha2.jpg" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="Images2/dasha3.jpg" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="Images2/dasha4.jpg" alt="" loading="lazy" /></div>
-      <div class="ts"><img src="Images2/dasha5.jpg" alt="" loading="lazy" /></div>
-      <button class="ts-arrow" id="ts-prev" aria-label="Previous image">&#8249;</button>
-      <button class="ts-arrow" id="ts-next" aria-label="Next image">&#8250;</button>
-      <div id="ts-dots"></div>
-      <div class="ts-label">✦ Trees2b</div>
-    </div>
-
-    <div id="page-body">
-
-      <!-- Hero name -->
-      <div class="hero">
-        <p class="hero-eyebrow">✦ counting down to</p>
-        <div class="hero-name">
-          <span id="hero-name-text">Dasha</span>
-          <span class="hero-name-grad" id="hero-name-grad">Dasha</span>
+    <div id="boot-screen">
+        <div class="boot-ui">
+            <div class="boot-status blink">SYSTEM LOCKED // AWAITING MANUAL OVERRIDE</div>
+            <div class="breach-btn" id="breach-trigger">
+                <div class="breach-text">HOLD TO BREACH</div>
+                <div class="breach-progress" id="breach-fill"></div>
+            </div>
+            <div class="boot-warning">AUDIO AND GYROSCOPIC SENSORS WILL BE ENGAGED</div>
         </div>
-      </div>
+    </div>
 
-      <!-- Countdown + vertical photo strip -->
-      <div class="cd-section">
+    <div id="flash-overlay"></div>
 
-        <!-- Countdown -->
-        <div class="cd-wrap">
-          <p class="cd-eyebrow">days &nbsp;·&nbsp; hours &nbsp;·&nbsp; minutes &nbsp;·&nbsp; seconds</p>
-          <div class="cd-row">
+    <canvas id="cosmos-canvas"></canvas>
 
-            <div class="cd-block" id="cdb-d">
-              <div class="cd-tooltip" id="tip-d">😴 sleeps</div>
-              <div class="cd-num" id="cd-d">00</div>
-              <div class="cd-unit">days</div>
+    <div id="target-cursor"></div>
+    <div id="target-dot"></div>
+
+    <audio id="player" loop crossorigin="anonymous">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="floating-dock">
+        <a href="#hero-trigger" class="dock-item magnetic" data-strength="40">CORE</a>
+        <div class="dock-separator"></div>
+        <a href="#film-trigger" class="dock-item magnetic" data-strength="40">FACTS</a>
+        <div class="dock-separator"></div>
+        <a href="#dash-trigger" class="dock-item magnetic" data-strength="40">TELEMETRY</a>
+    </div>
+
+    <div class="sys-overlay">
+        <div class="brand">TREES2B <span>[SYS_ONLINE]</span></div>
+        <div class="clock" id="live-clock">00:00:00</div>
+    </div>
+
+    <section class="hero-section" id="hero-trigger">
+        <div class="hero-sticky">
+            <h1 class="zoom-name" id="zoom-target">TREES2B</h1>
+            <div class="hero-ui">
+                <p>INITIATE DESCENT SEQUENCE</p>
+                <div class="scroll-line"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="film-section" id="film-trigger">
+        <div class="film-sticky">
+            <div class="film-track" id="film-track">
+                
+                <div class="film-frame title-frame">
+                    <h2>ORBITAL<br>FACTS</h2>
+                    <p>// HORIZONTAL_DATA_ENGAGED</p>
+                </div>
+
+                <div class="film-frame">
+                    <div class="video-card gravity-well">
+                        <div class="parallax-img">
+                            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&w=1200" alt="Deep Space Phenomenon">
+                        </div>
+                        <div class="frame-ui">
+                            <div class="fact-block">
+                                <h3>OUMUAMUA</h3>
+                                <p class="fact-text">The first known interstellar object detected passing through the Solar System. Its extreme elongation suggests it may be a fractured shard of a destroyed planet.</p>
+                            </div>
+                            <span class="tag">SECTOR // 01</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="film-frame">
+                    <div class="video-card gravity-well">
+                        <div class="parallax-img">
+                            <img src="https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&w=1200" alt="Cosmic Void">
+                        </div>
+                        <div class="frame-ui">
+                            <div class="fact-block">
+                                <h3>THE BOÖTES VOID</h3>
+                                <p class="fact-text">A spherical region of space 330 million light-years in diameter that contains almost zero galaxies. If the Milky Way were in its center, we wouldn't have known other galaxies existed until the 1960s.</p>
+                            </div>
+                            <span class="tag">SECTOR // 02</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="film-frame">
+                    <div class="video-card gravity-well">
+                        <div class="parallax-img">
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&w=1200" alt="Orbital View">
+                        </div>
+                        <div class="frame-ui">
+                            <div class="fact-block">
+                                <h3>NEUTRON DECAY</h3>
+                                <p class="fact-text">The core of a neutron star is so dense that a single teaspoon of its material would weigh 6 billion tons on Earth. The gravity bends light so severely you can see the back of the star from the front.</p>
+                            </div>
+                            <span class="tag">SECTOR // 03</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-section" id="dash-trigger">
+        <div class="dash-grid">
+            
+            <div class="dash-module module-map tilt-card">
+                <div class="module-header">STARMAP_LOCATOR</div>
+                <h2 class="impact-title">CYPRUS</h2>
+                <div class="coord-display">LAT 35.1149 / LNG 33.9396</div>
+                <div class="radar-wrapper"><canvas id="radar-canvas"></canvas></div>
             </div>
 
-            <div class="cd-sep">:</div>
-
-            <div class="cd-block" id="cdb-h">
-              <div class="cd-tooltip" id="tip-h">☕ coffees</div>
-              <div class="cd-num" id="cd-h">00</div>
-              <div class="cd-unit">hrs</div>
+            <div class="dash-module module-audio tilt-card">
+                <div class="module-header">RESONANCE_FREQ</div>
+                <div class="audio-visualizer"><canvas id="visualizer-canvas"></canvas></div>
+                <div class="action-btn magnetic" id="audio-toggle" data-strength="50">SYNC</div>
             </div>
 
-            <div class="cd-sep">:</div>
-
-            <div class="cd-block" id="cdb-m">
-              <div class="cd-tooltip" id="tip-m">💓 heartbeats</div>
-              <div class="cd-num" id="cd-m">00</div>
-              <div class="cd-unit">min</div>
+            <div class="dash-module module-terminal tilt-card wide-module">
+                <div class="module-header">SYSTEM_LOG // KEYLOGGER ACTIVE</div>
+                <div class="terminal-output" id="hacker-terminal">
+                    > ORBITAL CONNECTION STABLE...<br>
+                    > HIDDEN PROTOCOLS: [RESUME] [ACCESS] [CONTACT]
+                </div>
             </div>
 
-            <div class="cd-sep">:</div>
-
-            <div class="cd-block" id="cdb-s">
-              <div class="cd-tooltip" id="tip-s">👁 blinks</div>
-              <div class="cd-num" id="cd-s">00</div>
-              <div class="cd-unit">sec</div>
+            <div class="dash-module module-blog tilt-card wide-module">
+                <div class="module-header blink">ENVIRONMENT_CONTROL // UNLOCKED</div>
+                <h2 class="impact-title" style="margin-top: 10px; margin-bottom: 20px;">PHASE SHIFT</h2>
+                <button id="theme-toggle-btn" class="action-btn brutal-btn magnetic" data-strength="40" style="width: 100%;">
+                    ENGAGE ALTERNATE PROTOCOL
+                </button>
             </div>
 
-          </div>
-
-          <!-- Heartbeat EKG -->
-          <canvas id="heartbeat" class="heartbeat-canvas"></canvas>
-
         </div>
+    </section>
 
-      </div>
-
-      <div class="divider"></div>
-
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       GLASS MUSIC PLAYER (bottom-left)
-  ═══════════════════════════════════════ -->
-  <div id="player">
-    <div class="pl-track">
-      <div class="pl-art" id="pl-art">🎵</div>
-      <div class="pl-info">
-        <div class="pl-title"  id="pl-title">Golden Hour</div>
-        <div class="pl-artist" id="pl-artist">Lo-fi Chill</div>
-      </div>
-      <button class="pl-expand" id="btn-expand" aria-label="Full screen player">⤢</button>
-    </div>
-    <div class="pl-progress" id="pl-progress">
-      <div class="pl-bar" id="pl-bar"></div>
-    </div>
-    <div class="pl-times">
-      <span class="pl-time" id="pl-cur">0:00</span>
-      <span class="pl-time" id="pl-dur">0:00</span>
-    </div>
-    <div class="pl-controls">
-      <button class="pl-btn" id="btn-prev" aria-label="Previous">&#9664;&#9664;</button>
-      <button class="pl-btn play" id="btn-play" aria-label="Play/Pause">&#9654;</button>
-      <button class="pl-btn" id="btn-next" aria-label="Next">&#9654;&#9654;</button>
-    </div>
-    <div class="pl-vol">
-      <span class="pl-vol-icon">🔈</span>
-      <input class="pl-vol-slider" type="range" min="0" max="1" step="0.01" value="0.7" id="vol-slider" aria-label="Volume" />
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       FULLSCREEN MUSIC PLAYER
-  ═══════════════════════════════════════ -->
-  <div id="player-fs" aria-label="Fullscreen music player">
-    <div class="fs-bg" id="fs-bg"></div>
-    <div class="fs-inner">
-      <button class="fs-shrink" id="btn-shrink" aria-label="Minimise player">⌃ minimise</button>
-
-      <div class="fs-disc" id="fs-disc">🎵</div>
-
-      <div class="fs-meta">
-        <div class="fs-title"  id="fs-title">Golden Hour</div>
-        <div class="fs-artist" id="fs-artist">Lo-fi Chill</div>
-      </div>
-
-      <div class="fs-progress-wrap">
-        <div class="fs-progress" id="fs-progress">
-          <div class="fs-bar" id="fs-bar"></div>
-        </div>
-        <div class="fs-times">
-          <span id="fs-cur">0:00</span>
-          <span id="fs-dur">0:00</span>
-        </div>
-      </div>
-
-      <div class="fs-controls">
-        <button class="fs-btn" id="fs-prev" aria-label="Previous">&#9664;&#9664;</button>
-        <button class="fs-btn fs-play" id="fs-play" aria-label="Play/Pause">&#9654;</button>
-        <button class="fs-btn" id="fs-next" aria-label="Next">&#9654;&#9654;</button>
-      </div>
-
-      <div class="fs-vol">
-        <span class="fs-vol-icon">🔈</span>
-        <input class="fs-vol-slider" type="range" min="0" max="1" step="0.01" value="0.7" id="fs-vol-slider" aria-label="Volume" />
-        <span class="fs-vol-icon">🔊</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast notification -->
-  <div id="toast" role="status" aria-live="polite"></div>
-
-  <!-- ═══════════════════════════════════════
-       BIRTHDAY CELEBRATION OVERLAY
-  ═══════════════════════════════════════ -->
-  <div id="celeb" role="dialog" aria-label="Birthday celebration">
-    <canvas id="celeb-cv"></canvas>
-    <div class="celeb-inner">
-      <span class="celeb-tag">✦ the moment is finally here ✦</span>
-      <span class="celeb-name" id="celeb-name">Dasha</span>
-      <span class="celeb-sub">Happy Birthday</span>
-
-      <!-- Happy Birthday Dasha ticker -->
-      <div class="orbit-belt">
-        <div class="orbit-track">
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <!-- duplicate -->
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
-        </div>
-      </div>
-
-      <!-- Image slider -->
-      <div class="ad-strip-wrap">
-        <div class="ad-strip">
-          <div class="ad-track" id="celeb-ad-track">
-            <div class="ad-img"><img src="Images2/dasha1.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha2.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha3.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha4.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha1.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha2.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha3.jpg" alt="" loading="lazy"></div>
-            <div class="ad-img"><img src="Images2/dasha4.jpg" alt="" loading="lazy"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="celeb-hb-msg">Happy Birthday, D 🎂</div>
-
-      <div class="celeb-now-playing">
-        <div class="cnp-dot"></div>
-        <span class="cnp-text">now playing</span>
-        <span class="cnp-song">Happy Birthday — Mike Tyson</span>
-      </div>
-      <br />
-      <button class="celeb-close" id="btn-close-celeb">thank you ✦</button>
-    </div>
-  </div>
-
-  <!-- app.js — YouTube iframe is injected dynamically at celebration time -->
-  <script src="app.js"></script>
-
+    <script src="app.js"></script>
 </body>
 </html>
