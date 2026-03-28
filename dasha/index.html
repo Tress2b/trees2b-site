@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>a small gift from B ✦</title>
+  <title>For Dasha ✦</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Preload the first lock screen image so it shows instantly -->
+  <link rel="preload" as="image" href="images/dasha2.jpg" fetchpriority="high" />
 </head>
 <body>
 
@@ -26,18 +28,18 @@
   ═══════════════════════════════════════ -->
   <div id="lock">
     <div id="lock-slides">
-      <div class="ls on"><img src="images/dasha2.jpg" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="images/dasha1.png" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="Images/dasha3.jpg" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="https://picsum.photos/seed/dasha4/1800/1200" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="Images2/dasha9.jpg" alt="" loading="lazy" /></div>
+      <div class="ls on"><img src="images/dasha2.jpg"  alt="" loading="eager" fetchpriority="high" /></div>
+      <div class="ls"><img src="images/dasha1.png"     alt="" loading="eager" /></div>
+      <div class="ls"><img src="Images/dasha3.jpg"     alt="" loading="eager" /></div>
+      <div class="ls"><img src="Images2/dasha9.jpg"    alt="" loading="eager" /></div>
+      <div class="ls"><img src="Images2/dasha1.jpg"    alt="" loading="lazy"  /></div>
     </div>
 
     <div id="lock-ui">
       <div class="lock-top">
         <div class="lock-time" id="lock-time">12:00</div>
         <div class="lock-date" id="lock-date">Monday, January 1</div>
-        <div class="lock-name" id="lock-name">a small gift from B ✦</div>
+        <div class="lock-name" id="lock-name">for Dasha ✦</div>
       </div>
 
       <div class="lock-dots" id="lock-dots"></div>
@@ -68,7 +70,7 @@
       <button class="ts-arrow" id="ts-prev" aria-label="Previous image">&#8249;</button>
       <button class="ts-arrow" id="ts-next" aria-label="Next image">&#8250;</button>
       <div id="ts-dots"></div>
-      <div class="ts-label">✦ Trees2b</div>
+      <div class="ts-label">✦ for her</div>
     </div>
 
     <div id="page-body">
