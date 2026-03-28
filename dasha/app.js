@@ -2,9 +2,14 @@
    CONFIG
 ═══════════════════════════════════════════════════ */
 const NAME = "Dasha";
-const BIRTHDAY = new Date("2026-04-03T00:00:00");
+
+// Birthday window: Apr 3 00:00 → Apr 4 00:00 (1 full day)
+const BIRTHDAY      = new Date("2026-04-02T00:00:00");
+const BIRTHDAY_END  = new Date("2026-04-03T00:00:00");
+const BIRTHDAY_NEXT = new Date("2027-04-02T00:00:00");
+
 // Drake – Ratchet Happy Birthday
-const BDAY_SONG_FILE = "music/Ratchet Happy Birthday.mp3";
+const BDAY_SONG_FILE = "music/mike.mp3";
 
 /* ═══════════════════════════════════════════════════
    APPLY NAME EVERYWHERE
@@ -195,9 +200,9 @@ function fmtTime(s) {
 ═══════════════════════════════════════════════════ */
 const TRACKS = [
   { title:"Hometown Glory",   artist:"Adele",    emoji:"🎹", url:"music/Hometown Glory.mp3" },
-  { title:"Я то, что надо",   artist:"Браво",    emoji:"🎸", url:"music/Браво Я то, что надо.mp3" },
-  { title:"Валерий Сютки",    artist:"Валерий",  emoji:"🎷", url:"music/Валерий Сютки.mp3" },
-  { title:"Something Stupid", artist:"Sinatra",  emoji:"✨", url:"music/Something Stupid.mp3" },
+  { title:"Water Under the Bridge",   artist:"Adele",    emoji:"🎸", url:"music/Water_Under_the_Bridge.mp3" },
+  { title:"When We Were Young",    artist:"Adele",  emoji:"🎷", url:"music/When_We_Were_Young.mp3" },
+  { title:"Someone Like You", artist:"Adele",  emoji:"✨", url:"music/Someone_Like_You.mp3" },
   { title:"Птичка",           artist:"HammAli",  emoji:"🕊️", url:"music/Птичка.mp3" }
 ];
 
@@ -207,13 +212,15 @@ let audioEl   = null;
 let isPlaying = false;
 
 function setPlayIcon(on) {
-  document.getElementById("btn-play").innerHTML = on ? "&#9646;&#9646;" : "&#9654;";
+  const icon = on ? "&#9646;&#9646;" : "&#9654;";
+  document.getElementById("btn-play").innerHTML = icon;
+  const fsPlay = document.getElementById("fs-play");
+  if (fsPlay) fsPlay.innerHTML = icon;
 }
 
 function loadTrack(idx, autoplay) {
   trackIdx = (idx + TRACKS.length) % TRACKS.length;
   
-  // Save the new track index to the browser's memory
   localStorage.setItem("dashaSavedTrack", trackIdx);
   
   const t  = TRACKS[trackIdx];
@@ -226,16 +233,43 @@ function loadTrack(idx, autoplay) {
   document.getElementById("pl-cur").textContent    = "0:00";
   document.getElementById("pl-dur").textContent    = "0:00";
 
+  // If fullscreen player is open, update it immediately
+  const fsEl = document.getElementById('player-fs');
+  if (fsEl && fsEl.classList.contains('open')) {
+    const fsDisc   = document.getElementById('fs-disc');
+    const fsTitle  = document.getElementById('fs-title');
+    const fsArtist = document.getElementById('fs-artist');
+    const fsBar    = document.getElementById('fs-bar');
+    const fsCur    = document.getElementById('fs-cur');
+    const fsDur    = document.getElementById('fs-dur');
+    if (fsDisc)   fsDisc.textContent   = t.emoji;
+    if (fsTitle)  fsTitle.textContent  = t.title;
+    if (fsArtist) fsArtist.textContent = t.artist;
+    if (fsDisc)   fsDisc.classList.remove('spin');
+    if (fsBar)    fsBar.style.width    = '0%';
+    if (fsCur)    fsCur.textContent    = '0:00';
+    if (fsDur)    fsDur.textContent    = '0:00';
+  }
+
   if (audioEl) { audioEl.pause(); audioEl.src = ""; }
   audioEl = new Audio(t.url);
   audioEl.volume = parseFloat(document.getElementById("vol-slider").value);
   audioEl.addEventListener("loadedmetadata", () => {
-    document.getElementById("pl-dur").textContent = fmtTime(audioEl.duration);
+    const dur = fmtTime(audioEl.duration);
+    document.getElementById("pl-dur").textContent = dur;
+    const fsDur = document.getElementById('fs-dur');
+    if (fsDur) fsDur.textContent = dur;
   });
   audioEl.addEventListener("timeupdate", () => {
     if (!audioEl.duration) return;
-    document.getElementById("pl-bar").style.width = (audioEl.currentTime / audioEl.duration * 100) + "%";
-    document.getElementById("pl-cur").textContent = fmtTime(audioEl.currentTime);
+    const pct = (audioEl.currentTime / audioEl.duration * 100) + "%";
+    const cur  = fmtTime(audioEl.currentTime);
+    document.getElementById("pl-bar").style.width = pct;
+    document.getElementById("pl-cur").textContent = cur;
+    const fsBar = document.getElementById('fs-bar');
+    const fsCur = document.getElementById('fs-cur');
+    if (fsBar) fsBar.style.width  = pct;
+    if (fsCur) fsCur.textContent  = cur;
   });
   audioEl.addEventListener("ended", () => loadTrack(trackIdx + 1, true));
 
@@ -262,9 +296,13 @@ document.getElementById("btn-play").addEventListener("click", () => {
   
   // Otherwise, control the normal playlist
   if (!audioEl) { loadTrack(0, true); return; }
-  if (isPlaying) { audioEl.pause(); isPlaying = false; }
-  else { audioEl.play().then(() => { isPlaying = true; }).catch(() => {}); }
-  setPlayIcon(isPlaying);
+  if (isPlaying) {
+    audioEl.pause();
+    isPlaying = false;
+    setPlayIcon(false);
+  } else {
+    audioEl.play().then(() => { isPlaying = true; setPlayIcon(true); }).catch(() => {});
+  }
 });
 
 document.getElementById("btn-prev").addEventListener("click", () => loadTrack(trackIdx - 1, isPlaying));
@@ -313,8 +351,8 @@ function playBdaySong() {
   // Update player widget UI to show bday song
   document.getElementById("pl-art").textContent    = "🎂";
   document.getElementById("pl-art").classList.add("spin");
-  document.getElementById("pl-title").textContent  = "Ratchet Happy Birthday";
-  document.getElementById("pl-artist").textContent = "Drake";
+  document.getElementById("pl-title").textContent  = "Happy Birthday";
+  document.getElementById("pl-artist").textContent = "Mike Tyson";
   document.getElementById("player").classList.add("bday-glow");
   document.getElementById("pl-bar").style.width    = "100%";
   document.getElementById("pl-cur").textContent    = "0:00";
@@ -330,43 +368,219 @@ function stopBdaySong() {
 }
 
 /* ═══════════════════════════════════════════════════
-   COUNTDOWN
+   SPARKLE BURST
 ═══════════════════════════════════════════════════ */
+const SPARK_COLS = ['#f5d49a','#d98f8a','#c8784a','#7a9e8e','#f2e8d9','#ffffff'];
+function spawnSparkles(blockEl) {
+  const r  = blockEl.getBoundingClientRect();
+  const cx = r.left + r.width  / 2;
+  const cy = r.top  + r.height / 2;
+  for (let i = 0; i < 12; i++) {
+    const el  = document.createElement('div');
+    el.className = 'sparkle';
+    const sz  = 3 + Math.random() * 5;
+    const ang = (Math.PI * 2 / 12) * i + Math.random() * 0.4;
+    const d   = 28 + Math.random() * 36;
+    el.style.cssText = [
+      `width:${sz}px`, `height:${sz}px`,
+      `left:${cx - sz/2}px`, `top:${cy - sz/2}px`,
+      `background:${SPARK_COLS[i % SPARK_COLS.length]}`,
+      `--dx:${Math.cos(ang)*d}px`,
+      `--dy:${Math.sin(ang)*d}px`,
+      `animation-duration:${0.45 + Math.random()*0.3}s`,
+      `animation-delay:${Math.random()*0.06}s`,
+    ].join(';');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   COUNTDOWN  — interactive with tooltips + number roll
+═══════════════════════════════════════════════════ */
+const UNITS = ['d','h','m','s'];
+
+// Fun label conversions
+const FUN_LABEL = {
+  d: v => `😴 ${v} sleep${v!==1?'s':''}`,
+  h: v => `☕ ${v} coffee${v!==1?'s':''}`,
+  m: v => `💓 ${Math.round(v*72).toLocaleString()} heartbeats`,
+  s: v => `👁 ${Math.round(v*0.4)} blinks`,
+};
+
+// Cache elements
+const cdEls = {};
+UNITS.forEach(k => {
+  cdEls[k] = {
+    num:   document.getElementById(`cd-${k}`),
+    block: document.getElementById(`cdb-${k}`),
+    tip:   document.getElementById(`tip-${k}`),
+    raw:   0,
+  };
+});
+
+// Hover: sparkles + heartbeat boost
+let hbHover = false;
+UNITS.forEach(k => {
+  const b = cdEls[k].block;
+  if (!b) return;
+  b.addEventListener('mouseenter', () => { hbHover = true;  spawnSparkles(b); });
+  b.addEventListener('mouseleave', () => { hbHover = false; });
+  b.addEventListener('touchstart', () => spawnSparkles(b), { passive: true });
+});
+
+// Roll number + update tooltip
 const prevVals = {};
-let cdTimer    = null;
+function setUnit(k, raw) {
+  const str = String(raw).padStart(2, '0');
+  if (prevVals[k] === str) return;
+  prevVals[k] = str;
+
+  const el = cdEls[k].num;
+  cdEls[k].raw = raw;
+
+  // Update tooltip text
+  if (cdEls[k].tip) cdEls[k].tip.textContent = FUN_LABEL[k](raw);
+
+  // Roll animation
+  el.classList.remove('roll-out','roll-in');
+  void el.offsetWidth;
+  el.classList.add('roll-out');
+  setTimeout(() => {
+    el.textContent = str;
+    el.classList.remove('roll-out');
+    void el.offsetWidth;
+    el.classList.add('roll-in');
+    setTimeout(() => el.classList.remove('roll-in'), 250);
+  }, 180);
+}
+
+/* ═══════════════════════════════════════════════════
+   HEARTBEAT CANVAS
+═══════════════════════════════════════════════════ */
+const hbCanvas = document.getElementById('heartbeat');
+const hbCtx    = hbCanvas.getContext('2d');
+const EKG = [0,0,0,0.04,-0.04,0.08,-0.12,0,0,0,0.18,-0.28,1.0,-0.55,0.1,0,0,0.22,0.28,0.08,0,0,0,0,0,0,0,0,0];
+const EKG_LEN = EKG.length;
+let hbOff = 0, hbBaseSpd = 1.0, hbCol = '#7a9e8e';
+
+function resizeHb() {
+  const dpr = devicePixelRatio || 1;
+  hbCanvas.width  = hbCanvas.offsetWidth  * dpr;
+  hbCanvas.height = hbCanvas.offsetHeight * dpr;
+  hbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resizeHb();
+window.addEventListener('resize', resizeHb);
+
+(function drawHb() {
+  const W = hbCanvas.offsetWidth, H = hbCanvas.offsetHeight;
+  const mid = H/2, amp = H*0.4, step = W/26;
+  const total = EKG_LEN * step;
+  const spd = hbBaseSpd * (hbHover ? 2.8 : 1);
+  const col = hbHover ? 'rgba(200,120,74,0.95)' : hbCol;
+
+  hbCtx.clearRect(0, 0, W, H);
+
+  // base line
+  hbCtx.beginPath();
+  hbCtx.strokeStyle = 'rgba(242,232,217,0.05)';
+  hbCtx.lineWidth = 1;
+  hbCtx.moveTo(0, mid); hbCtx.lineTo(W, mid);
+  hbCtx.stroke();
+
+  // EKG
+  hbCtx.beginPath();
+  hbCtx.strokeStyle = col;
+  hbCtx.lineWidth = hbHover ? 2.2 : 1.6;
+  hbCtx.lineJoin = 'round'; hbCtx.lineCap = 'round';
+  let first = true;
+  const off = hbOff % total;
+  for (let rep = -1; rep <= 2; rep++) {
+    for (let i = 0; i < EKG_LEN; i++) {
+      const x = rep*total - off + i*step;
+      const y = mid - EKG[i]*amp;
+      first ? hbCtx.moveTo(x,y) : hbCtx.lineTo(x,y);
+      first = false;
+    }
+  }
+  hbCtx.stroke();
+
+  // lead dot
+  const lx = W*0.75, phase = Math.floor((hbOff/step)%EKG_LEN);
+  const ly = mid - EKG[phase]*amp;
+  const dotR = hbHover ? 8 : 5;
+  const grd = hbCtx.createRadialGradient(lx,ly,0,lx,ly,dotR+2);
+  grd.addColorStop(0, col); grd.addColorStop(1,'transparent');
+  hbCtx.beginPath(); hbCtx.fillStyle = grd;
+  hbCtx.arc(lx, ly, dotR, 0, Math.PI*2); hbCtx.fill();
+
+  hbOff += spd;
+  requestAnimationFrame(drawHb);
+})();
+
+/* ═══════════════════════════════════════════════════
+   TENSION + TICK
+═══════════════════════════════════════════════════ */
+let cdTimer = null;
+
+function applyTension(diff) {
+  const hrs = diff / 3600000, secs = diff / 1000;
+  UNITS.forEach(k => {
+    const b = cdEls[k].block;
+    if (!b) return;
+    if (hrs < 24) { b.classList.add('warm');   b.classList.remove('urgent','pulse'); hbCol = 'rgba(245,212,154,.85)'; hbBaseSpd = 1.7; }
+    if (hrs < 1)  { b.classList.add('urgent'); b.classList.remove('warm','pulse');   hbCol = 'rgba(217,143,138,.9)';  hbBaseSpd = 2.8;
+      aOrbs.forEach(o => o.a = Math.min(o.a+0.003, 0.17)); }
+    if (secs <= 10 && secs > 0) { b.classList.add('pulse'); hbCol = 'rgba(200,120,74,1)';
+      hbBaseSpd = 3.0 + (10-secs)*0.4; aOrbs.forEach(o => o.a = 0.2); }
+  });
+}
 
 function tick() {
-  const diff = BIRTHDAY - Date.now();
+  const now  = Date.now();
 
-  if (diff <= 0) {
-    clearInterval(cdTimer);
-    ["cd-d","cd-h","cd-m","cd-s"].forEach(id => {
-      document.getElementById(id).textContent = "00";
+  // ── STATE 3: past the birthday window → count to next year ──
+  if (now >= BIRTHDAY_END.getTime()) {
+    const diff = BIRTHDAY_NEXT - now;
+    if (diff <= 0) { clearInterval(cdTimer); return; }
+    const vals = {
+      d: Math.floor(diff/86400000),
+      h: Math.floor((diff%86400000)/3600000),
+      m: Math.floor((diff%3600000)/60000),
+      s: Math.floor((diff%60000)/1000),
+    };
+    Object.entries(vals).forEach(([k,v]) => {
+      if (prevVals[k] !== String(v).padStart(2,'0')) setUnit(k,v);
     });
-    // Small delay so user sees the zeros before celebration pops
+    return;
+  }
+
+  // ── STATE 2: inside birthday window → show celeb, keep it up ──
+  if (now >= BIRTHDAY.getTime()) {
+    clearInterval(cdTimer);
+    UNITS.forEach(k => setUnit(k, 0));
+    // Hide close button — she can't dismiss it during the window
+    const closeBtn = document.getElementById('btn-close-celeb');
+    if (closeBtn) closeBtn.style.display = 'none';
     setTimeout(triggerCeleb, 400);
     return;
   }
 
+  // ── STATE 1: counting down to birthday ──
+  const diff = BIRTHDAY - now;
   const vals = {
-    "cd-d": Math.floor(diff / 86400000),
-    "cd-h": Math.floor((diff % 86400000) / 3600000),
-    "cd-m": Math.floor((diff % 3600000)  / 60000),
-    "cd-s": Math.floor((diff % 60000)    / 1000),
+    d: Math.floor(diff/86400000),
+    h: Math.floor((diff%86400000)/3600000),
+    m: Math.floor((diff%3600000)/60000),
+    s: Math.floor((diff%60000)/1000),
   };
-
-  Object.entries(vals).forEach(([id, val]) => {
-    const str = String(val).padStart(2, "0");
-    if (prevVals[id] === str) return;
-    prevVals[id] = str;
-    const el = document.getElementById(id);
-    el.classList.remove("tick");
-    void el.offsetWidth; // force reflow — restarts animation
-    el.classList.add("tick");
-    el.textContent = str;
+  let changed = false;
+  Object.entries(vals).forEach(([k,v]) => {
+    if (prevVals[k] !== String(v).padStart(2,'0')) { setUnit(k,v); changed = true; }
   });
+  applyTension(diff);
 }
-
 cdTimer = setInterval(tick, 1000);
 tick();
 
@@ -381,50 +595,6 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
 }
-
-/* ═══════════════════════════════════════════════════
-   WISH BUTTONS
-═══════════════════════════════════════════════════ */
-// Grab saved values from memory, default to 0 if they don't exist
-let wishCount = parseInt(localStorage.getItem("dashaWishCount")) || 0;
-let msgIdx    = parseInt(localStorage.getItem("dashaMsgIdx")) || 0;
-
-// Instantly update the HTML on load so she sees her saved number
-document.getElementById("wish-count").textContent = wishCount;
-
-const MESSAGES = [
-  "born on a day the world decided to try its absolute hardest",
-  "the kind of person who makes strangers feel like old friends",
-  "equal parts chaos and grace — somehow, always perfectly you",
-  "a little terrifying, entirely wonderful, completely irreplaceable",
-  "the reason this whole year was worth it",
-  "you have a gift for making everywhere feel like somewhere",
-];
-
-// Display the saved message on load
-document.getElementById("msg").textContent = MESSAGES[msgIdx];
-
-function sendWish(msg) {
-  wishCount++;
-  // Save new wish count to memory
-  localStorage.setItem("dashaWishCount", wishCount);
-  document.getElementById("wish-count").textContent = wishCount;
-  
-  showToast(msg);
-  
-  msgIdx = (msgIdx + 1) % MESSAGES.length;
-  // Save new message index to memory
-  localStorage.setItem("dashaMsgIdx", msgIdx);
-  
-  const el = document.getElementById("msg");
-  el.style.opacity = "0";
-  setTimeout(() => { el.textContent = MESSAGES[msgIdx]; el.style.opacity = "1"; }, 320);
-  for (let i = 0; i < 6; i++) setTimeout(spawnPetal, i * 90);
-}
-
-document.getElementById("btn-wish").addEventListener( "click", () => sendWish("🌸 a wish just went your way"));
-document.getElementById("btn-love").addEventListener( "click", () => sendWish("💛 all the love in the world"));
-document.getElementById("btn-magic").addEventListener("click", () => sendWish("✨ magic, just for you"));
 
 /* ═══════════════════════════════════════════════════
    CELEBRATION + CONFETTI
@@ -531,6 +701,10 @@ function triggerCeleb() {
 }
 
 function closeCeleb() {
+  // Don't allow closing during the birthday window
+  const now = Date.now();
+  if (now >= BIRTHDAY.getTime() && now < BIRTHDAY_END.getTime()) return;
+
   celebOn = false;
   clearInterval(burstInterval);
   burstInterval = null;
@@ -550,60 +724,128 @@ window.addEventListener("resize", () => {
   celebCanvas.width  = window.innerWidth;
   celebCanvas.height = window.innerHeight;
 });
-// ═══════════════════════════════════════════════════
-//   GIFT FORM SUBMISSION (TELEGRAM OR EMAIL)
-// ═══════════════════════════════════════════════════
-const btnTg = document.getElementById("btn-tg");
-const btnEmail = document.getElementById("btn-email");
-const giftChoices = document.getElementById("gift-choices");
-const giftForm = document.getElementById("gift-form");
-const contactInfo = document.getElementById("contact-info");
-const contactMethod = document.getElementById("contact-method");
+/* ═══════════════════════════════════════════════════
+   IMAGE BELT — celeb page scroller
+═══════════════════════════════════════════════════ */
+(function () {
+  const track = document.getElementById('celeb-ad-track');
+  if (!track) return;
+  const IMG_VW = 0.45, COUNT = 4;
+  let halfW = window.innerWidth * IMG_VW * COUNT;
+  let x = 0;
+  window.addEventListener('resize', () => {
+    halfW = window.innerWidth * IMG_VW * COUNT;
+    if (x > halfW) x = x % halfW;
+  });
+  function step() {
+    x += 0.7;
+    if (x >= halfW) x -= halfW;
+    track.style.transform = `translateX(${-x}px)`;
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+})();
 
-if (btnTg && btnEmail) {
-  // If she clicks Telegram
-  btnTg.addEventListener("click", () => {
-    giftChoices.style.display = "none";
-    giftForm.style.display = "flex";
-    contactInfo.type = "text";
-    contactInfo.placeholder = "Your Telegram @username or number...";
-    contactMethod.value = "Telegram";
+/* ═══════════════════════════════════════════════════
+   FULLSCREEN MUSIC PLAYER
+═══════════════════════════════════════════════════ */
+(function () {
+  const fsEl      = document.getElementById('player-fs');
+  const btnExpand = document.getElementById('btn-expand');
+  const btnShrink = document.getElementById('btn-shrink');
+  const fsDisc    = document.getElementById('fs-disc');
+  const fsTitle   = document.getElementById('fs-title');
+  const fsArtist  = document.getElementById('fs-artist');
+  const fsBar     = document.getElementById('fs-bar');
+  const fsCur     = document.getElementById('fs-cur');
+  const fsDur     = document.getElementById('fs-dur');
+  const fsProg    = document.getElementById('fs-progress');
+  const fsPlayBtn = document.getElementById('fs-play');
+  const fsPrevBtn = document.getElementById('fs-prev');
+  const fsNextBtn = document.getElementById('fs-next');
+  const fsVol     = document.getElementById('fs-vol-slider');
+
+  // Mirror the mini player's art emoji into the fullscreen disc
+  function syncMeta() {
+    const art    = document.getElementById('pl-art');
+    const title  = document.getElementById('pl-title');
+    const artist = document.getElementById('pl-artist');
+    if (art)    fsDisc.textContent  = art.textContent;
+    if (title)  fsTitle.textContent  = title.textContent;
+    if (artist) fsArtist.textContent = artist.textContent;
+  }
+
+  // Sync progress bar and time
+  function syncProgress() {
+    const bar = document.getElementById('pl-bar');
+    const cur = document.getElementById('pl-cur');
+    const dur = document.getElementById('pl-dur');
+    if (bar) fsBar.style.width  = bar.style.width;
+    if (cur) fsCur.textContent  = cur.textContent;
+    if (dur) fsDur.textContent  = dur.textContent;
+  }
+
+  // Keep disc spinning in sync with mini player art
+  function syncSpin() {
+    const art = document.getElementById('pl-art');
+    if (!art) return;
+    if (art.classList.contains('spin')) fsDisc.classList.add('spin');
+    else                                fsDisc.classList.remove('spin');
+  }
+
+  // Sync play button icon
+  function syncPlayIcon() {
+    const mini = document.getElementById('btn-play');
+    if (!mini) return;
+    fsPlayBtn.innerHTML = mini.innerHTML;
+  }
+
+  let syncInterval = null;
+
+  function openFs() {
+    syncMeta();
+    syncProgress();
+    syncSpin();
+    syncPlayIcon();
+    fsEl.classList.add('open');
+    // Sync every 500ms while open
+    syncInterval = setInterval(() => {
+      syncProgress();
+      syncSpin();
+      syncPlayIcon();
+    }, 500);
+  }
+
+  function closeFs() {
+    fsEl.classList.remove('open');
+    clearInterval(syncInterval);
+  }
+
+  btnExpand.addEventListener('click', openFs);
+  btnShrink.addEventListener('click', closeFs);
+
+  // fs play/prev/next mirror the mini player buttons
+  fsPlayBtn.addEventListener('click', () => document.getElementById('btn-play')?.click());
+  fsPrevBtn.addEventListener('click', () => document.getElementById('btn-prev')?.click());
+  fsNextBtn.addEventListener('click', () => document.getElementById('btn-next')?.click());
+
+  // fs progress seek mirrors mini player progress click
+  fsProg.addEventListener('click', e => {
+    const miniProg = document.getElementById('pl-progress');
+    if (!miniProg) return;
+    const ratio = e.offsetX / fsProg.offsetWidth;
+    const fake  = new MouseEvent('click', { bubbles: true, clientX: miniProg.getBoundingClientRect().left + ratio * miniProg.offsetWidth });
+    miniProg.dispatchEvent(fake);
   });
 
-  // If she clicks Email
-  btnEmail.addEventListener("click", () => {
-    giftChoices.style.display = "none";
-    giftForm.style.display = "flex";
-    contactInfo.type = "email";
-    contactInfo.placeholder = "Your email address...";
-    contactMethod.value = "Email";
+  // fs volume mirrors mini volume slider
+  fsVol.addEventListener('input', () => {
+    const miniVol = document.getElementById('vol-slider');
+    if (miniVol) { miniVol.value = fsVol.value; miniVol.dispatchEvent(new Event('input')); }
   });
-
-  // Handle the Send button
-  giftForm.addEventListener("submit", function(e) {
-    e.preventDefault(); 
-    
-    const btn = document.getElementById("gift-btn");
-    const data = new FormData(giftForm);
-
-    btn.textContent = "Sending...";
-    btn.disabled = true;
-
-    fetch("https://formspree.io/f/myknerve", {
-      method: "POST",
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    }).then(response => {
-      if (response.ok) {
-        btn.textContent = "Sent!";
-        giftForm.reset();
-      } else {
-        btn.textContent = "Error";
-        btn.disabled = false;
-      }
-    }).catch(error => {
-      btn.textContent = "Error";
-      btn.disabled = false;
-    });
-  });
-}
+  // Keep fs vol in sync with mini on open
+  const miniVolSlider = document.getElementById('vol-slider');
+  if (miniVolSlider) {
+    miniVolSlider.addEventListener('input', () => { fsVol.value = miniVolSlider.value; });
+  }
+})();

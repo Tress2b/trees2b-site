@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>For Dasha ✦</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -28,8 +26,8 @@
   ═══════════════════════════════════════ -->
   <div id="lock">
     <div id="lock-slides">
-      <div class="ls on"><img src="Images/dasha2.jpg" alt="" loading="lazy" /></div>
-      <div class="ls"><img src="Images/dasha1.png" alt="" loading="lazy" /></div>
+      <div class="ls on"><img src="images/dasha2.jpg" alt="" loading="lazy" /></div>
+      <div class="ls"><img src="images/dasha1.png" alt="" loading="lazy" /></div>
       <div class="ls"><img src="Images/dasha3.jpg" alt="" loading="lazy" /></div>
       <div class="ls"><img src="https://picsum.photos/seed/dasha4/1800/1200" alt="" loading="lazy" /></div>
       <div class="ls"><img src="Images2/dasha9.jpg" alt="" loading="lazy" /></div>
@@ -87,54 +85,51 @@
       <!-- Countdown + vertical photo strip -->
       <div class="cd-section">
 
-        <!-- Vertical sliding photo strip -->
-
-
         <!-- Countdown -->
         <div class="cd-wrap">
           <p class="cd-eyebrow">days &nbsp;·&nbsp; hours &nbsp;·&nbsp; minutes &nbsp;·&nbsp; seconds</p>
           <div class="cd-row">
-            <div class="cd-block"><div class="cd-num" id="cd-d">00</div><div class="cd-unit">days</div></div>
+
+            <div class="cd-block" id="cdb-d">
+              <div class="cd-tooltip" id="tip-d">😴 sleeps</div>
+              <div class="cd-num" id="cd-d">00</div>
+              <div class="cd-unit">days</div>
+            </div>
+
             <div class="cd-sep">:</div>
-            <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">hrs</div></div>
+
+            <div class="cd-block" id="cdb-h">
+              <div class="cd-tooltip" id="tip-h">☕ coffees</div>
+              <div class="cd-num" id="cd-h">00</div>
+              <div class="cd-unit">hrs</div>
+            </div>
+
             <div class="cd-sep">:</div>
-            <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">min</div></div>
+
+            <div class="cd-block" id="cdb-m">
+              <div class="cd-tooltip" id="tip-m">💓 heartbeats</div>
+              <div class="cd-num" id="cd-m">00</div>
+              <div class="cd-unit">min</div>
+            </div>
+
             <div class="cd-sep">:</div>
-            <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">sec</div></div>
+
+            <div class="cd-block" id="cdb-s">
+              <div class="cd-tooltip" id="tip-s">👁 blinks</div>
+              <div class="cd-num" id="cd-s">00</div>
+              <div class="cd-unit">sec</div>
+            </div>
+
           </div>
+
+          <!-- Heartbeat EKG -->
+          <canvas id="heartbeat" class="heartbeat-canvas"></canvas>
+
         </div>
 
       </div>
 
       <div class="divider"></div>
-
-      <!-- Rotating message -->
-      <div class="message">
-        <p class="msg-text" id="msg">born on a day the world decided to try its absolute hardest</p>
-      </div>
-
-      <!-- Action buttons -->
-      <div class="actions">
-        <button class="btn" id="btn-wish"><span>send a wish</span></button>
-        <button class="btn" id="btn-love"><span>send love</span></button>
-        <button class="btn" id="btn-magic"><span>send magic</span></button>
-      </div>
-
-      <p class="wish-line">wishes sent: <strong id="wish-count">0</strong></p>
-
-      <!-- little joke section -->
-      <div class="footnote-joke">
-        <div class="fnj-line"></div>
-        <p class="fnj-text">
-          got suggestions? 
-          <a class="fnj-link" href="tel:+905338842042">text Ben ✦</a>
-          <span class="fnj-num">+90 533 884 20 42</span>
-        </p>
-        <p class="fnj-text fnj-complaint">
-          any complaints? talk to Dasha 💅
-        </p>
-        <div class="fnj-line"></div>
-      </div>
 
     </div>
   </div>
@@ -149,6 +144,7 @@
         <div class="pl-title"  id="pl-title">Golden Hour</div>
         <div class="pl-artist" id="pl-artist">Lo-fi Chill</div>
       </div>
+      <button class="pl-expand" id="btn-expand" aria-label="Full screen player">⤢</button>
     </div>
     <div class="pl-progress" id="pl-progress">
       <div class="pl-bar" id="pl-bar"></div>
@@ -168,6 +164,45 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════
+       FULLSCREEN MUSIC PLAYER
+  ═══════════════════════════════════════ -->
+  <div id="player-fs" aria-label="Fullscreen music player">
+    <div class="fs-bg" id="fs-bg"></div>
+    <div class="fs-inner">
+      <button class="fs-shrink" id="btn-shrink" aria-label="Minimise player">⌃ minimise</button>
+
+      <div class="fs-disc" id="fs-disc">🎵</div>
+
+      <div class="fs-meta">
+        <div class="fs-title"  id="fs-title">Golden Hour</div>
+        <div class="fs-artist" id="fs-artist">Lo-fi Chill</div>
+      </div>
+
+      <div class="fs-progress-wrap">
+        <div class="fs-progress" id="fs-progress">
+          <div class="fs-bar" id="fs-bar"></div>
+        </div>
+        <div class="fs-times">
+          <span id="fs-cur">0:00</span>
+          <span id="fs-dur">0:00</span>
+        </div>
+      </div>
+
+      <div class="fs-controls">
+        <button class="fs-btn" id="fs-prev" aria-label="Previous">&#9664;&#9664;</button>
+        <button class="fs-btn fs-play" id="fs-play" aria-label="Play/Pause">&#9654;</button>
+        <button class="fs-btn" id="fs-next" aria-label="Next">&#9654;&#9654;</button>
+      </div>
+
+      <div class="fs-vol">
+        <span class="fs-vol-icon">🔈</span>
+        <input class="fs-vol-slider" type="range" min="0" max="1" step="0.01" value="0.7" id="fs-vol-slider" aria-label="Volume" />
+        <span class="fs-vol-icon">🔊</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast notification -->
   <div id="toast" role="status" aria-live="polite"></div>
 
@@ -180,25 +215,48 @@
       <span class="celeb-tag">✦ the moment is finally here ✦</span>
       <span class="celeb-name" id="celeb-name">Dasha</span>
       <span class="celeb-sub">Happy Birthday</span>
-      <span class="celeb-emojis">🎂 🎉 🌸 👑</span>
-      <div class="celeb-now-playing">
-        <div class="gift-section">
-  <p class="gift-text">Choose how to receive your gift ✦</p>
-  
-  <div class="gift-choices" id="gift-choices">
-    <button type="button" class="gift-btn" id="btn-tg">Telegram</button>
-    <button type="button" class="gift-btn" id="btn-email">Email</button>
-  </div>
 
-  <form id="gift-form" style="display: none;">
-    <input type="hidden" name="Contact_Method" id="contact-method" value="">
-    <input type="text" name="Contact_Info" id="contact-info" required class="gift-input">
-    <button type="submit" class="gift-btn" id="gift-btn">Send</button>
-  </form>
-</div>
+      <!-- Happy Birthday Dasha ticker -->
+      <div class="orbit-belt">
+        <div class="orbit-track">
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <!-- duplicate -->
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+          <span class="orbit-item">Happy Birthday Dasha</span><span class="orbit-sep">✦</span>
+        </div>
+      </div>
+
+      <!-- Image slider -->
+      <div class="ad-strip-wrap">
+        <div class="ad-strip">
+          <div class="ad-track" id="celeb-ad-track">
+            <div class="ad-img"><img src="Images2/dasha1.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha2.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha3.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha4.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha1.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha2.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha3.jpg" alt="" loading="lazy"></div>
+            <div class="ad-img"><img src="Images2/dasha4.jpg" alt="" loading="lazy"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="celeb-hb-msg">Happy Birthday, D 🎂</div>
+
+      <div class="celeb-now-playing">
         <div class="cnp-dot"></div>
         <span class="cnp-text">now playing</span>
-        <span class="cnp-song">Ratchet Happy Birthday — Drake</span>
+        <span class="cnp-song">Happy Birthday — Mike Tyson</span>
       </div>
       <br />
       <button class="celeb-close" id="btn-close-celeb">thank you ✦</button>
