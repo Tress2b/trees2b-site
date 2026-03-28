@@ -8,8 +8,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <!-- Preload the first lock screen image so it shows instantly -->
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+
+  <!-- Preload ALL lock screen images so they're ready before the slideshow hits them -->
   <link rel="preload" as="image" href="images/dasha2.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="images/dasha1.png" fetchpriority="high" />
+  <link rel="preload" as="image" href="Images/dasha3.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="Images/1200.jpg"   fetchpriority="high" />
+  <link rel="preload" as="image" href="Images2/dasha9.jpg" />
 </head>
 <body>
 
@@ -29,10 +37,10 @@
   <div id="lock">
     <div id="lock-slides">
       <div class="ls on"><img src="images/dasha2.jpg"  alt="" loading="eager" fetchpriority="high" /></div>
-      <div class="ls"><img src="images/dasha1.png"     alt="" loading="eager" /></div>
-      <div class="ls"><img src="Images/dasha3.jpg"     alt="" loading="eager" /></div>
-      <div class="ls"><img src="Images/1200.jpg"       alt="" loading="eager" /></div>
-      <div class="ls"><img src="Images2/dasha9.jpg"    alt="" loading="lazy"  /></div>
+      <div class="ls"><img src="images/dasha1.png"     alt="" loading="eager" fetchpriority="high" /></div>
+      <div class="ls"><img src="Images/dasha3.jpg"     alt="" loading="eager" fetchpriority="high" /></div>
+      <div class="ls"><img src="Images/1200.jpg"       alt="" loading="eager" fetchpriority="high" /></div>
+      <div class="ls"><img src="Images2/dasha9.jpg"    alt="" loading="eager" /></div>
     </div>
 
     <div id="lock-ui">
