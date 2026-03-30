@@ -4,9 +4,9 @@
 const NAME = "Dasha";
 
 // Birthday window: Apr 3 00:00 → Apr 4 00:00 (1 full day)
-const BIRTHDAY      = new Date("2026-04-02T00:00:00");
-const BIRTHDAY_END  = new Date("2026-04-03T00:00:00");
-const BIRTHDAY_NEXT = new Date("2027-04-02T00:00:00");
+const BIRTHDAY      = new Date("2026-04-03T00:00:00");
+const BIRTHDAY_END  = new Date("2026-04-04T00:00:00");
+const BIRTHDAY_NEXT = new Date("2027-04-03T00:00:00");
 
 // Drake – Ratchet Happy Birthday
 const BDAY_SONG_FILE = "music/mike.mp3";
