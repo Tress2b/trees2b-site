@@ -11,6 +11,29 @@ const BIRTHDAY_NEXT = new Date("2027-04-03T00:00:00");
 // Drake – Ratchet Happy Birthday
 const BDAY_SONG_FILE = "music/mike.mp3";
 
+// Pre-load the birthday song immediately at page start
+// so it's buffered and ready to play the instant they tap
+let bdayAudioEl = new Audio(BDAY_SONG_FILE);
+bdayAudioEl.loop   = true;
+bdayAudioEl.volume = 0.7;
+bdayAudioEl.preload = "auto";
+bdayAudioEl.autoplay = true; // <-- Added Autoplay property
+
+// <-- Added DOMContentLoaded listener for early autoplay -->
+window.addEventListener('DOMContentLoaded', () => {
+    bdayAudioEl.play().then(() => {
+        // Automatically updates your play icons if successful
+        setPlayIcon(true);
+        document.getElementById("pl-art").textContent    = "🎂";
+        document.getElementById("pl-art").classList.add("spin");
+        document.getElementById("pl-title").textContent  = "Happy Birthday";
+        document.getElementById("pl-artist").textContent = "Mike Tyson";
+        document.getElementById("player").classList.add("bday-glow");
+    }).catch((e) => {
+        console.log("Autoplay prevented by browser, waiting for user click.", e);
+    });
+});
+
 /* ═══════════════════════════════════════════════════
    APPLY NAME EVERYWHERE
 ═══════════════════════════════════════════════════ */
@@ -157,6 +180,20 @@ function unlock() {
   locked = false;
   lockEl.classList.add("away");
   backBtn.classList.add("show");
+
+  // Play birthday song instantly — this click IS the user gesture
+  bdayAudioEl.volume = parseFloat(document.getElementById("vol-slider").value);
+  bdayAudioEl.play().then(() => {
+    setPlayIcon(true);
+    // Update mini player UI
+    document.getElementById("pl-art").textContent    = "🎂";
+    document.getElementById("pl-art").classList.add("spin");
+    document.getElementById("pl-title").textContent  = "Happy Birthday";
+    document.getElementById("pl-artist").textContent = "Mike Tyson";
+    document.getElementById("player").classList.add("bday-glow");
+    document.getElementById("pl-cur").textContent    = "0:00";
+    document.getElementById("pl-dur").textContent    = "~3:00";
+  }).catch(() => {});
 }
 function goLock() {
   if (locked) return;
@@ -288,10 +325,23 @@ document.getElementById("btn-play").addEventListener("click", () => {
       bdayAudioEl.pause();
       setPlayIcon(false);
     } else {
-      bdayAudioEl.play();
-      setPlayIcon(true);
+      bdayAudioEl.play().then(() => setPlayIcon(true)).catch(() => {});
     }
     return;
+  }
+
+  // Also handle bday song playing outside celeb mode (auto-started on unlock)
+  if (bdayAudioEl && !bdayAudioEl.src.includes('undefined')) {
+    const isBdayTrack = document.getElementById('pl-title').textContent === 'Happy Birthday';
+    if (isBdayTrack) {
+      if (!bdayAudioEl.paused) {
+        bdayAudioEl.pause();
+        setPlayIcon(false);
+      } else {
+        bdayAudioEl.play().then(() => setPlayIcon(true)).catch(() => {});
+      }
+      return;
+    }
   }
   
   // Otherwise, control the normal playlist
@@ -305,8 +355,51 @@ document.getElementById("btn-play").addEventListener("click", () => {
   }
 });
 
-document.getElementById("btn-prev").addEventListener("click", () => loadTrack(trackIdx - 1, isPlaying));
-document.getElementById("btn-next").addEventListener("click", () => loadTrack(trackIdx + 1, isPlaying));
+/* Custom confirmation overlay for song change */
+(function() {
+  const overlay = document.createElement('div');
+  overlay.id = 'song-confirm';
+  overlay.innerHTML = `
+    <div class="sc-box">
+      <p class="sc-msg">are you sure you want to change<br>this <em>great</em> song? 🎂</p>
+      <div class="sc-btns">
+        <button id="sc-yes">yes, change it</button>
+        <button id="sc-no">no, keep it ♥</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  let pendingAction = null;
+
+  window.confirmSongChange = function(action) {
+    // If birthday song isn't playing, just do it directly
+    if (!bdayAudioEl || bdayAudioEl.paused) { action(); return; }
+    pendingAction = action;
+    overlay.classList.add('open');
+  };
+
+  document.getElementById('sc-yes').addEventListener('click', () => {
+    overlay.classList.remove('open');
+    if (pendingAction) { pendingAction(); pendingAction = null; }
+  });
+  document.getElementById('sc-no').addEventListener('click', () => {
+    overlay.classList.remove('open');
+    pendingAction = null;
+  });
+})();
+
+document.getElementById("btn-prev").addEventListener("click", () => {
+  window.confirmSongChange(() => {
+    stopBdaySong();
+    loadTrack(trackIdx - 1, true);
+  });
+});
+document.getElementById("btn-next").addEventListener("click", () => {
+  window.confirmSongChange(() => {
+    stopBdaySong();
+    loadTrack(trackIdx + 1, true);
+  });
+});
 
 document.getElementById("vol-slider").addEventListener("input", e => {
   const vol = parseFloat(e.target.value);
@@ -324,26 +417,15 @@ loadTrack(0, false);
 
 /* ═══════════════════════════════════════════════════
    BIRTHDAY SONG
-   FIX: Instead of hidden -9999px IFrame API (blocked by
-   browsers), we inject a real tiny iframe with autoplay=1
-   in the src. The browser allows autoplay because:
-   1. The user already tapped the lock screen (gesture ✓)
-   2. The iframe is in-viewport at near-zero opacity
 ═══════════════════════════════════════════════════ */
-let bdayAudioEl = null;
 
 function playBdaySong() {
   // Stop background music
   if (audioEl && !audioEl.paused) { audioEl.pause(); isPlaying = false; }
 
-  // Clean up any old iframe if it exists
   const old = document.getElementById("yt-frame");
   if (old) old.remove();
 
-  // Initialize and play local birthday song
-  if (!bdayAudioEl) {
-    bdayAudioEl = new Audio(BDAY_SONG_FILE);
-  }
   bdayAudioEl.volume = parseFloat(document.getElementById("vol-slider").value);
   bdayAudioEl.currentTime = 0;
   bdayAudioEl.play().then(() => setPlayIcon(true)).catch(() => setPlayIcon(false));

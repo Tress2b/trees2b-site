@@ -1353,3 +1353,76 @@ body::before {
   height: 44px;
   margin-top: 14px;
 }
+
+/* ═══════════════════════════════════════════════════
+   SONG CHANGE CONFIRMATION
+═══════════════════════════════════════════════════ */
+#song-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12,10,9,0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+#song-confirm.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.sc-box {
+  background: rgba(18,14,11,0.92);
+  border: 1px solid rgba(200,120,74,0.3);
+  border-radius: 22px;
+  padding: 32px 36px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: scPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes scPop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.sc-msg {
+  font-family: 'Cormorant Garant', serif;
+  font-style: italic;
+  font-size: clamp(17px, 3vw, 22px);
+  color: var(--cream);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+.sc-msg em { color: var(--terra); font-style: normal; font-weight: 600; }
+.sc-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.sc-btns button {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 1px solid rgba(242,232,217,0.15);
+  transition: all 0.25s;
+}
+#sc-yes {
+  background: rgba(242,232,217,0.06);
+  color: rgba(242,232,217,0.5);
+}
+#sc-yes:hover { background: rgba(242,232,217,0.12); color: var(--cream); }
+#sc-no {
+  background: linear-gradient(135deg, var(--terra), var(--blush));
+  color: var(--bg);
+  border-color: transparent;
+  font-weight: 700;
+}
+#sc-no:hover { transform: scale(1.05); }
